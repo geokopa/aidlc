@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Agentic SDLC with GitHub — RFC / RFD</title>
+<style>
+  :root{
+    --background:#ffffff;
+    --foreground:#0f172a;
+    --card:#ffffff;
+    --card-foreground:#0f172a;
+    --popover:#ffffff;
+    --popover-foreground:#0f172a;
+    --primary:#2563eb;
+    --primary-foreground:#ffffff;
+    --secondary:#f1f5f9;
+    --secondary-foreground:#0f172a;
+    --muted:#f8fafc;
+    --muted-foreground:#64748b;
+    --accent:#eff6ff;
+    --accent-foreground:#1d4ed8;
+    --destructive:#dc2626;
+    --border:#e2e8f0;
+    --input:#e2e8f0;
+    --ring:#93c5fd;
+    --success:#15803d;
+    --success-bg:#f0fdf4;
+    --warning:#a16207;
+    --warning-bg:#fffbeb;
+    --purple:#7c3aed;
+    --purple-bg:#f5f3ff;
+    --radius:16px;
+    --shadow:0 1px 2px rgba(15,23,42,.04),0 8px 24px rgba(15,23,42,.05);
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0;
+    background:linear-gradient(180deg,#fff 0%,#fbfdff 55%,#fff 100%);
+    color:var(--foreground);
+    font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    line-height:1.55;
+  }
+  a{color:inherit}
+  .page{width:min(1240px,calc(100% - 32px));margin:0 auto;padding:28px 0 72px}
+  .topbar{
+    display:flex;align-items:center;justify-content:space-between;gap:18px;
+    padding:10px 0 22px;
+  }
+  .brand{display:flex;align-items:center;gap:12px;font-weight:700}
+  .brandmark{
+    width:40px;height:40px;border:1px solid var(--border);border-radius:12px;
+    display:grid;place-items:center;background:#fff;box-shadow:var(--shadow)
+  }
+  .badge{
+    display:inline-flex;align-items:center;gap:8px;border:1px solid #bfdbfe;
+    background:#eff6ff;color:#1d4ed8;padding:7px 11px;border-radius:999px;
+    font-size:12px;font-weight:700;letter-spacing:.02em
+  }
+  .hero{
+    display:grid;grid-template-columns:1.35fr .65fr;gap:20px;align-items:stretch;
+    margin-bottom:22px;
+  }
+  .hero-main,.hero-side,.card{
+    border:1px solid var(--border);background:rgba(255,255,255,.92);
+    border-radius:var(--radius);box-shadow:var(--shadow);
+  }
+  .hero-main{padding:34px}
+  .hero-side{padding:24px}
+  .eyebrow{font-size:13px;color:var(--primary);font-weight:800;text-transform:uppercase;letter-spacing:.08em}
+  h1{font-size:clamp(38px,5vw,68px);line-height:1.02;letter-spacing:-.045em;margin:10px 0 18px}
+  .lede{font-size:18px;color:#475569;max-width:850px;margin:0}
+  .principle{
+    margin-top:26px;padding:18px;border:1px solid #bfdbfe;background:linear-gradient(135deg,#eff6ff,#f8fbff);
+    border-radius:14px;display:flex;gap:14px;align-items:flex-start
+  }
+  .icon-circle{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;flex:none}
+  .blue{background:#eff6ff;color:#2563eb}.green{background:#f0fdf4;color:#15803d}
+  .amber{background:#fffbeb;color:#a16207}.purple{background:#f5f3ff;color:#7c3aed}
+  .red{background:#fef2f2;color:#dc2626}
+  .hero-side h3,.card h3{margin:0 0 8px;font-size:18px;letter-spacing:-.015em}
+  .hero-side p,.card p{margin:0;color:#475569}
+  .mini-stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:18px}
+  .mini-stat{border:1px solid var(--border);border-radius:12px;padding:13px;background:#fff}
+  .mini-stat b{display:block;font-size:20px}
+  .mini-stat span{font-size:12px;color:var(--muted-foreground)}
+  .section{margin-top:24px}
+  .section-head{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;margin-bottom:12px}
+  .section h2{font-size:28px;letter-spacing:-.03em;margin:0}
+  .section-kicker{font-size:13px;color:var(--muted-foreground)}
+  .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+  .grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+  .card{padding:20px}
+  .card.compact{padding:16px}
+  .card h4{margin:0 0 6px;font-size:15px}
+  .card small{color:var(--muted-foreground)}
+  .pill{display:inline-flex;padding:4px 9px;border-radius:999px;font-size:11px;font-weight:700;background:var(--secondary);color:#334155}
+  .pill.blue{background:#eff6ff;color:#1d4ed8}.pill.green{background:#f0fdf4;color:#15803d}
+  .pill.amber{background:#fffbeb;color:#a16207}.pill.purple{background:#f5f3ff;color:#7c3aed}
+  .flow{
+    display:grid;grid-template-columns:repeat(9,1fr);gap:8px;align-items:center;
+    overflow-x:auto;padding-bottom:4px
+  }
+  .step{min-width:110px;text-align:center}
+  .step .node{
+    width:54px;height:54px;border-radius:50%;border:1px solid var(--border);
+    margin:0 auto 9px;display:grid;place-items:center;background:#fff;
+  }
+  .step b{display:block;font-size:12px;line-height:1.2}
+  .step span{display:block;font-size:10.5px;color:var(--muted-foreground);margin-top:5px;line-height:1.25}
+  .arrow{text-align:center;color:#94a3b8;font-size:22px}
+  .summary-band{
+    border:1px solid #dbeafe;background:linear-gradient(135deg,#f8fbff,#ffffff 48%,#f0fdf4);
+    border-radius:var(--radius);padding:22px;box-shadow:var(--shadow)
+  }
+  .summary-band strong{font-size:18px}
+  .checks{display:grid;gap:9px;margin-top:12px}
+  .check{display:flex;gap:9px;align-items:flex-start;color:#334155;font-size:14px}
+  .dot{width:20px;height:20px;border-radius:6px;display:grid;place-items:center;flex:none;margin-top:1px;background:#eff6ff;color:#2563eb;font-size:12px;font-weight:900}
+  .compare{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .compare-col{border:1px solid var(--border);border-radius:14px;padding:16px}
+  .compare-col.good{background:var(--success-bg);border-color:#bbf7d0}
+  .compare-col.bad{background:#fff7f7;border-color:#fecaca}
+  ul{margin:10px 0 0 18px;padding:0;color:#475569}
+  li{margin:7px 0}
+  code,.mono{
+    font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;
+  }
+  pre{
+    background:#0f172a;color:#e2e8f0;border-radius:14px;padding:16px;overflow:auto;
+    font-size:12px;line-height:1.5;margin:12px 0 0
+  }
+  .repo-tree{
+    background:#fbfdff;border:1px dashed #cbd5e1;border-radius:14px;padding:16px;
+    font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12.5px;line-height:1.65;color:#334155
+  }
+  .ladder{display:grid;gap:8px}
+  .level{display:grid;grid-template-columns:74px 1fr;gap:12px;align-items:center;border:1px solid var(--border);padding:11px 12px;border-radius:12px;background:#fff}
+  .level .n{font-size:12px;font-weight:800;color:#1d4ed8;background:#eff6ff;border-radius:8px;padding:6px 8px;text-align:center}
+  .level:nth-last-child(2) .n,.level:last-child .n{color:#15803d;background:#f0fdf4}
+  .risk-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:9px;margin-top:12px}
+  .risk{padding:10px 12px;border-radius:10px;border:1px solid var(--border);background:#fff;font-size:12px}
+  .metric{padding:14px;border:1px solid var(--border);border-radius:12px;background:#fff}
+  .metric b{font-size:13px}.metric span{display:block;color:var(--muted-foreground);font-size:11px;margin-top:3px}
+  .rfc-table{width:100%;border-collapse:separate;border-spacing:0;border:1px solid var(--border);border-radius:14px;overflow:hidden;font-size:13px}
+  .rfc-table th,.rfc-table td{padding:12px 14px;text-align:left;border-bottom:1px solid var(--border);vertical-align:top}
+  .rfc-table th{background:#f8fafc;font-size:12px;color:#475569}
+  .rfc-table tr:last-child td{border-bottom:none}
+  .footer{
+    margin-top:28px;border:1px solid var(--border);border-radius:14px;padding:16px 18px;
+    color:#475569;font-size:13px;display:flex;justify-content:space-between;gap:16px;align-items:center;background:#fff
+  }
+  .toc{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}
+  .toc a{text-decoration:none;border:1px solid var(--border);border-radius:999px;padding:7px 10px;font-size:12px;color:#475569;background:#fff}
+  .callout{border-left:3px solid var(--primary);padding:12px 14px;background:#f8fbff;border-radius:0 12px 12px 0;color:#334155;margin-top:12px}
+  .phase{position:relative;padding-left:18px}
+  .phase:before{content:"";position:absolute;left:0;top:7px;bottom:7px;width:2px;background:#dbeafe}
+  .phase-item{position:relative;padding:0 0 18px 14px}
+  .phase-item:before{content:"";position:absolute;left:-5px;top:5px;width:10px;height:10px;border-radius:50%;background:#2563eb;border:2px solid #dbeafe}
+  .phase-item:last-child{padding-bottom:0}
+  @media (max-width:980px){
+    .hero,.grid-2,.grid-3,.grid-4{grid-template-columns:1fr}
+    .flow{grid-template-columns:repeat(17,max-content)}
+    .arrow{min-width:24px}
+    .risk-grid{grid-template-columns:1fr}
+  }
+  @media print{
+    body{background:#fff}
+    .page{width:100%;padding:0}
+    .card,.hero-main,.hero-side,.summary-band{box-shadow:none;break-inside:avoid}
+    .toc{display:none}
+  }
+</style>
+</head>
+<body>
+<main class="page">
+  <div class="topbar">
+    <div class="brand">
+      <div class="brandmark" aria-hidden="true">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 2a10 10 0 0 0-3.16 19.49c.5.09.68-.22.68-.48v-1.69c-2.78.6-3.37-1.18-3.37-1.18-.45-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.61.07-.61 1 .07 1.53 1.03 1.53 1.03.9 1.53 2.35 1.09 2.92.83.09-.65.35-1.09.64-1.34-2.22-.25-4.56-1.11-4.56-4.95 0-1.09.39-1.99 1.03-2.69-.1-.25-.45-1.27.1-2.65 0 0 .84-.27 2.75 1.03A9.55 9.55 0 0 1 12 6.82c.85 0 1.71.11 2.51.33 1.91-1.3 2.75-1.03 2.75-1.03.55 1.38.2 2.4.1 2.65.64.7 1.03 1.6 1.03 2.69 0 3.85-2.35 4.69-4.58 4.94.36.31.68.92.68 1.86V21c0 .27.18.58.69.48A10 10 0 0 0 12 2Z" fill="currentColor"/></svg>
+      </div>
+      <span>Engineering RFC</span>
+    </div>
+    <div class="badge">RFC / RFD • Agentic SDLC</div>
+  </div>
+
+  <section class="hero">
+    <div class="hero-main">
+      <div class="eyebrow">Proposal</div>
+      <h1>Agentic SDLC with GitHub</h1>
+      <p class="lede">A practical operating model for using AI coding agents safely at organizational scale. The goal is not maximum autonomy. The goal is faster delivery with stronger verification, clear ownership, and GitHub-enforced guardrails.</p>
+
+      <div class="principle">
+        <div class="icon-circle blue">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 3 4 7v5c0 4.7 3.2 7.8 8 9 4.8-1.2 8-4.3 8-9V7l-8-4Z" stroke="currentColor" stroke-width="1.8"/><path d="m9 12 2 2 4-4" stroke="currentColor" stroke-width="1.8"/></svg>
+        </div>
+        <div>
+          <b>Core principle</b>
+          <div style="color:#475569;margin-top:3px">Define intent, constrain the agent, verify the result, and preserve human accountability.</div>
+        </div>
+      </div>
+
+      <div class="toc">
+        <a href="#summary">Executive summary</a>
+        <a href="#flow">New SDLC flow</a>
+        <a href="#git">GitHub guardrails</a>
+        <a href="#context">Agent context</a>
+        <a href="#review">Human review</a>
+        <a href="#trust">Trust ladder</a>
+        <a href="#metrics">Metrics</a>
+        <a href="#rollout">Rollout</a>
+      </div>
+    </div>
+
+    <aside class="hero-side">
+      <span class="pill blue">Decision framing</span>
+      <h3 style="margin-top:14px">Why now</h3>
+      <p>AI makes implementation cheaper. That moves the bottleneck from typing code to requirements, architecture, review, testing, security, and deployment confidence.</p>
+      <div class="mini-stat-grid">
+        <div class="mini-stat"><b>Smaller</b><span>PRs and change sets</span></div>
+        <div class="mini-stat"><b>Stronger</b><span>CI and policy gates</span></div>
+        <div class="mini-stat"><b>Clearer</b><span>repo-level instructions</span></div>
+        <div class="mini-stat"><b>Higher</b><span>human focus on risk</span></div>
+      </div>
+    </aside>
+  </section>
+
+  <section id="summary" class="summary-band">
+    <div class="section-head" style="margin:0 0 8px">
+      <div>
+        <div class="section-kicker">ONE-PAGE MANAGER VIEW</div>
+        <h2>Executive Summary</h2>
+      </div>
+      <span class="pill green">Recommended target state</span>
+    </div>
+
+    <div class="flow" style="margin-top:18px">
+      <div class="step"><div class="node green">①</div><b>Issue / Requirement</b><span>Human defines outcomes and acceptance criteria</span></div>
+      <div class="arrow">→</div>
+      <div class="step"><div class="node blue">②</div><b>Agent Plans</b><span>Explores repo, proposes approach</span></div>
+      <div class="arrow">→</div>
+      <div class="step"><div class="node purple">③</div><b>Agent Implements</b><span>Writes code, tests, self-review</span></div>
+      <div class="arrow">→</div>
+      <div class="step"><div class="node amber">④</div><b>Verification</b><span>Build, tests, lint, security</span></div>
+      <div class="arrow">→</div>
+      <div class="step"><div class="node blue">⑤</div><b>Pull Request</b><span>Small change, summary, evidence</span></div>
+      <div class="arrow">→</div>
+      <div class="step"><div class="node green">⑥</div><b>AI + Human Review</b><span>Automation checks detail; humans assess risk</span></div>
+      <div class="arrow">→</div>
+      <div class="step"><div class="node blue">⑦</div><b>Merge Queue</b><span>Validate against latest main</span></div>
+      <div class="arrow">→</div>
+      <div class="step"><div class="node green">⑧</div><b>Deploy + Verify</b><span>Observability and feedback loop</span></div>
+    </div>
+
+    <div class="grid-4" style="margin-top:18px">
+      <div class="metric"><b>GitHub = Safety Boundary</b><span>No direct pushes. Required checks. CODEOWNERS. Merge rules.</span></div>
+      <div class="metric"><b>Repository = Agent Context</b><span>AGENTS.md, Copilot instructions, skills, architecture and test guidance.</span></div>
+      <div class="metric"><b>Automation = Enforcement</b><span>If a rule can be checked in CI, do not rely only on prompts.</span></div>
+      <div class="metric"><b>Humans = Accountability</b><span>Review intent, architecture, risk, security, behavior and simplicity.</span></div>
+    </div>
+  </section>
+
+  <section id="flow" class="section">
+    <div class="section-head">
+      <div>
+        <div class="section-kicker">01 • PROCESS CHANGE</div>
+        <h2>How the SDLC changes</h2>
+      </div>
+      <span class="pill blue">Implementation is no longer the main bottleneck</span>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <span class="pill">Traditional</span>
+        <h3 style="margin-top:12px">Developer-centered flow</h3>
+        <pre>Requirement
+   ↓
+Developer designs
+   ↓
+Developer writes code
+   ↓
+Developer writes/runs tests
+   ↓
+Pull Request
+   ↓
+Human review
+   ↓
+CI
+   ↓
+Merge
+   ↓
+Deploy</pre>
+      </div>
+      <div class="card">
+        <span class="pill blue">Agentic</span>
+        <h3 style="margin-top:12px">Intent + verification-centered flow</h3>
+        <pre>Requirement / Issue
+   ↓
+Human defines acceptance criteria
+   ↓
+Agent explores repository
+   ↓
+Agent proposes plan
+   ↓
+Agent implements + tests
+   ↓
+Automated verification
+   ↓
+Pull Request
+   ↓
+AI review + Human review
+   ↓
+Merge Queue
+   ↓
+Deploy + Runtime verification</pre>
+      </div>
+    </div>
+
+    <div class="callout"><b>Organizational implication:</b> as code generation gets cheaper, engineering quality depends more on the strength of requirements, repository context, automated verification, security policy, and review discipline.</div>
+  </section>
+
+  <section id="git" class="section">
+    <div class="section-head">
+      <div>
+        <div class="section-kicker">02 • SOURCE CONTROL MODEL</div>
+        <h2>GitHub becomes the safety boundary</h2>
+      </div>
+    </div>
+
+    <div class="grid-3">
+      <div class="card">
+        <div class="icon-circle blue">↗</div>
+        <h3 style="margin-top:12px">Agent permissions</h3>
+        <div class="checks">
+          <div class="check"><span class="dot">✓</span><span>Read repository and issue context</span></div>
+          <div class="check"><span class="dot">✓</span><span>Create short-lived branches</span></div>
+          <div class="check"><span class="dot">✓</span><span>Create commits and push branch</span></div>
+          <div class="check"><span class="dot">✓</span><span>Open and update pull requests</span></div>
+          <div class="check"><span class="dot">✓</span><span>Read CI results and fix failures</span></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="icon-circle red">!</div>
+        <h3 style="margin-top:12px">What agents should not bypass</h3>
+        <div class="checks">
+          <div class="check"><span class="dot" style="background:#fef2f2;color:#dc2626">×</span><span>Direct push to <code>main</code></span></div>
+          <div class="check"><span class="dot" style="background:#fef2f2;color:#dc2626">×</span><span>Branch protection or rulesets</span></div>
+          <div class="check"><span class="dot" style="background:#fef2f2;color:#dc2626">×</span><span>Human approval for protected areas</span></div>
+          <div class="check"><span class="dot" style="background:#fef2f2;color:#dc2626">×</span><span>Production secrets or database access</span></div>
+          <div class="check"><span class="dot" style="background:#fef2f2;color:#dc2626">×</span><span>Approval of their own pull request</span></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="icon-circle green">✓</div>
+        <h3 style="margin-top:12px">Required rulesets</h3>
+        <div class="checks">
+          <div class="check"><span class="dot">✓</span><span>Pull request required</span></div>
+          <div class="check"><span class="dot">✓</span><span>Direct and force pushes blocked</span></div>
+          <div class="check"><span class="dot">✓</span><span>Required status checks</span></div>
+          <div class="check"><span class="dot">✓</span><span>Code scanning / secret scanning</span></div>
+          <div class="check"><span class="dot">✓</span><span>CODEOWNERS + human approval</span></div>
+          <div class="check"><span class="dot">✓</span><span>Dismiss stale approvals after changes</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-head">
+      <div>
+        <div class="section-kicker">03 • GIT WORKFLOW</div>
+        <h2>Prefer trunk-based development and small PRs</h2>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <h3>Recommended branch model</h3>
+        <pre>main
+ │
+ ├── feat/123-add-payment-validation
+ ├── fix/456-null-reference
+ └── refactor/789-order-service
+
+Issue → short branch → small PR → merge → delete</pre>
+        <p style="margin-top:12px">Branches should usually live for hours or a few days, not weeks. Agentic workflows reduce the need for large, long-running branches.</p>
+      </div>
+      <div class="card">
+        <h3>PR size is a control mechanism</h3>
+        <div class="compare" style="margin-top:12px">
+          <div class="compare-col good">
+            <b style="color:#15803d">Prefer</b>
+            <ul>
+              <li>Atomic change</li>
+              <li>One business purpose</li>
+              <li>Easy-to-review diff</li>
+              <li>Clear test evidence</li>
+              <li>Easy rollback</li>
+            </ul>
+          </div>
+          <div class="compare-col bad">
+            <b style="color:#dc2626">Avoid</b>
+            <ul>
+              <li>Thousands of changed lines</li>
+              <li>Mixed feature + refactor + dependency update</li>
+              <li>Long-lived branches</li>
+              <li>Large generated diffs</li>
+              <li>Hard-to-explain history</li>
+            </ul>
+          </div>
+        </div>
+        <div class="callout"><b>Key idea:</b> with AI, human attention becomes the scarce resource. Small PRs protect review quality.</div>
+      </div>
+    </div>
+  </section>
+
+  <section id="context" class="section">
+    <div class="section-head">
+      <div>
+        <div class="section-kicker">04 • REPOSITORY DESIGN</div>
+        <h2>The repository becomes the agent’s operating context</h2>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <div class="repo-tree">/
+├── AGENTS.md
+├── README.md
+├── CONTRIBUTING.md
+│
+├── .github/
+│   ├── copilot-instructions.md
+│   ├── instructions/
+│   │   ├── csharp.instructions.md
+│   │   ├── sql.instructions.md
+│   │   └── testing.instructions.md
+│   ├── skills/
+│   │   ├── implement-feature/
+│   │   ├── code-review/
+│   │   └── database-change/
+│   ├── CODEOWNERS
+│   ├── pull_request_template.md
+│   └── workflows/
+│
+├── docs/
+│   ├── architecture.md
+│   ├── testing.md
+│   └── security.md
+├── src/
+└── tests/</div>
+      </div>
+
+      <div class="card">
+        <h3>What belongs where</h3>
+        <div class="checks">
+          <div class="check"><span class="dot">A</span><span><b>AGENTS.md</b><br><small>Short, stable repository-wide rules and invariants shared across agents.</small></span></div>
+          <div class="check"><span class="dot">I</span><span><b>Path instructions</b><br><small>Specific rules for C#, SQL, tests, infrastructure, security-sensitive folders, etc.</small></span></div>
+          <div class="check"><span class="dot">S</span><span><b>Skills</b><br><small>Reusable workflows for common tasks such as implementation, review, schema changes, or releases.</small></span></div>
+          <div class="check"><span class="dot">D</span><span><b>Docs</b><br><small>Architecture, testing strategy, security boundaries, operational expectations.</small></span></div>
+          <div class="check"><span class="dot">O</span><span><b>CODEOWNERS</b><br><small>Automatic routing of sensitive changes to the right human owners.</small></span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:16px">
+      <h3>Keep repository instructions compact</h3>
+      <pre># Architecture
+- Controllers must not contain business logic.
+- Domain must not reference Infrastructure.
+- External operations must be idempotent.
+
+# Testing
+- New business logic requires tests.
+- Database behavior requires integration tests.
+- Do not delete or disable tests to make CI pass.
+
+# Git
+- Never commit directly to main.
+- Keep changes scoped to the assigned issue.
+- Do not modify unrelated files.
+- Do not add dependencies without justification.</pre>
+      <p style="margin-top:12px">Long “everything documents” become noisy. Stable global rules should stay short, while specialized instructions should live close to the files and workflows they govern.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-head">
+      <div>
+        <div class="section-kicker">05 • ENFORCEMENT</div>
+        <h2>Move standards from prose into executable checks</h2>
+      </div>
+    </div>
+
+    <div class="grid-3">
+      <div class="card compact"><span class="pill blue">Architecture</span><h3 style="margin-top:10px">Rules → Architecture tests</h3><p>Enforce dependency direction, bounded contexts, layering, naming conventions, or package boundaries automatically.</p></div>
+      <div class="card compact"><span class="pill blue">Code quality</span><h3 style="margin-top:10px">Standards → Lint / format</h3><p>Formatting, analyzers, compiler warnings and style should be machine-checkable and consistent.</p></div>
+      <div class="card compact"><span class="pill blue">Security</span><h3 style="margin-top:10px">Policy → Scanning</h3><p>Use SAST, CodeQL, dependency review, secret scanning and push protection as hard gates.</p></div>
+      <div class="card compact"><span class="pill blue">Testing</span><h3 style="margin-top:10px">Behavior → Tests</h3><p>Acceptance criteria should map to unit, integration and end-to-end tests where appropriate.</p></div>
+      <div class="card compact"><span class="pill blue">Dependencies</span><h3 style="margin-top:10px">Supply chain → Review</h3><p>New packages should be justified, reviewed, scanned and checked for maintenance and license risk.</p></div>
+      <div class="card compact"><span class="pill blue">CI</span><h3 style="margin-top:10px">Definition of correct</h3><p>Build, tests, architecture checks and security checks are the objective verification layer.</p></div>
+    </div>
+
+    <div class="callout"><b>Rule of thumb:</b> if a standard can be checked automatically, do not rely only on an instruction file or prompt to enforce it.</div>
+  </section>
+
+  <section id="review" class="section">
+    <div class="section-head">
+      <div>
+        <div class="section-kicker">06 • REVIEW MODEL</div>
+        <h2>Change what humans spend time reviewing</h2>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <h3>Automation / AI should handle more of</h3>
+        <div class="checks">
+          <div class="check"><span class="dot">✓</span><span>Formatting, lint and obvious style issues</span></div>
+          <div class="check"><span class="dot">✓</span><span>Missing null checks and simple static-analysis findings</span></div>
+          <div class="check"><span class="dot">✓</span><span>Basic test failures and build issues</span></div>
+          <div class="check"><span class="dot">✓</span><span>Known architecture-policy violations</span></div>
+          <div class="check"><span class="dot">✓</span><span>Security and dependency scanning</span></div>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Humans should focus on</h3>
+        <div class="checks">
+          <div class="check"><span class="dot">1</span><span><b>Problem correctness</b><br><small>Does this solve the right problem?</small></span></div>
+          <div class="check"><span class="dot">2</span><span><b>Architecture and design</b><br><small>Is the approach maintainable and consistent?</small></span></div>
+          <div class="check"><span class="dot">3</span><span><b>Edge cases and business risk</b><br><small>Can this corrupt data or break important behavior?</small></span></div>
+          <div class="check"><span class="dot">4</span><span><b>Security boundaries</b><br><small>Are authorization, data and trust boundaries correct?</small></span></div>
+          <div class="check"><span class="dot">5</span><span><b>Tests and simplicity</b><br><small>Do tests prove behavior, and is this the simplest reasonable solution?</small></span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout"><b>Operating model:</b> AI review is an additional reviewer. CI is objective verification. Human review carries accountability.</div>
+  </section>
+
+  <section class="section">
+    <div class="section-head">
+      <div>
+        <div class="section-kicker">07 • TRACEABILITY</div>
+        <h2>Make the Issue the contract</h2>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <span class="pill red">Weak</span>
+        <pre>Improve portfolio calculation.</pre>
+      </div>
+      <div class="card">
+        <span class="pill green">Strong</span>
+        <pre>Calculate portfolio market value.
+
+Requirements
+MarketValue = Quantity × Price × FXRate
+
+Acceptance criteria
+- Supports USD securities
+- Supports non-USD securities
+- Missing FX rate returns validation error
+- Existing calculations remain unchanged
+- Unit tests cover calculation rules
+- Integration test covers persistence
+
+Out of scope
+- Historical pricing
+- FX rate retrieval
+- UI changes</pre>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:16px">
+      <h3>Traceability chain</h3>
+      <div class="flow" style="grid-template-columns:repeat(11,1fr);margin-top:14px">
+        <div class="step"><div class="node green">R</div><b>Requirement</b></div><div class="arrow">→</div>
+        <div class="step"><div class="node blue">I</div><b>Issue</b></div><div class="arrow">→</div>
+        <div class="step"><div class="node purple">A</div><b>Agent Session</b></div><div class="arrow">→</div>
+        <div class="step"><div class="node amber">C</div><b>Commits</b></div><div class="arrow">→</div>
+        <div class="step"><div class="node blue">PR</div><b>Pull Request</b></div><div class="arrow">→</div>
+        <div class="step"><div class="node green">T</div><b>Tests / Deploy</b></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-head">
+      <div>
+        <div class="section-kicker">08 • COMMIT HYGIENE</div>
+        <h2>Use logical checkpoints, then squash for clean history</h2>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <h3>During agent work</h3>
+        <pre>feat(portfolio): add market value calculation
+test(portfolio): cover currency conversion
+refactor(portfolio): extract pricing service</pre>
+        <p style="margin-top:12px">Intermediate commits should be meaningful enough to support debugging, review and recovery.</p>
+      </div>
+      <div class="card">
+        <h3>On <code>main</code></h3>
+        <pre>A  feat: calculate portfolio market value (#142)
+B  fix: handle missing FX rate (#143)
+C  feat: expose market value API (#144)</pre>
+        <p style="margin-top:12px">Squash merge is a good default for most application work. It keeps <code>main</code> readable without requiring perfect intermediate history.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="trust" class="section">
+    <div class="section-head">
+      <div>
+        <div class="section-kicker">09 • GOVERNANCE</div>
+        <h2>Adopt an agent trust ladder</h2>
+      </div>
+      <span class="pill amber">Autonomy should be earned</span>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <div class="ladder">
+          <div class="level"><div class="n">Level 0</div><div><b>AI suggests code</b><br><small>Human performs all repository actions.</small></div></div>
+          <div class="level"><div class="n">Level 1</div><div><b>AI edits locally</b><br><small>Human commits and pushes.</small></div></div>
+          <div class="level"><div class="n">Level 2</div><div><b>AI creates commits</b><br><small>Human pushes and reviews.</small></div></div>
+          <div class="level"><div class="n">Level 3</div><div><b>AI creates branch + PR</b><br><small>Human approves.</small></div></div>
+          <div class="level"><div class="n">Level 4</div><div><b>AI fixes CI and review findings</b><br><small>Human still approves merge.</small></div></div>
+          <div class="level"><div class="n">Level 5</div><div><b>AI handles low-risk issues</b><br><small>Policy + CI + human oversight.</small></div></div>
+          <div class="level"><div class="n">Level 6</div><div><b>AI auto-merges pre-approved low-risk work</b><br><small>Strict scope, policy and monitoring required.</small></div></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Trust level should vary by repository and change type</h3>
+        <table class="rfc-table" style="margin-top:12px">
+          <thead><tr><th>Change type</th><th>Suggested posture</th></tr></thead>
+          <tbody>
+            <tr><td>Docs / generated metadata</td><td>Higher autonomy after validation</td></tr>
+            <tr><td>Routine application code</td><td>Agent creates PR; human approves</td></tr>
+            <tr><td>Financial calculations</td><td>Human design + review required</td></tr>
+            <tr><td>Auth / authorization</td><td>Security owner required</td></tr>
+            <tr><td>Database migrations</td><td>Owner approval + rollback plan</td></tr>
+            <tr><td>CI / infra / deployment</td><td>Platform owner + stricter policy</td></tr>
+          </tbody>
+        </table>
+        <div class="callout"><b>Important:</b> “the agent can do it” is not the same as “the agent should have permission to do it.”</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-head">
+      <div>
+        <div class="section-kicker">10 • RISK-BASED CONTROLS</div>
+        <h2>Treat some files as higher risk</h2>
+      </div>
+    </div>
+
+    <div class="card">
+      <p>Changes with larger blast radius should trigger stronger review, additional CI checks, or explicit CODEOWNERS approval.</p>
+      <div class="risk-grid">
+        <div class="risk mono">.github/workflows/**</div>
+        <div class="risk mono">infrastructure/**</div>
+        <div class="risk mono">database/migrations/**</div>
+        <div class="risk mono">auth/** / authorization/**</div>
+        <div class="risk mono">*.csproj / Directory.Packages.props</div>
+        <div class="risk mono">Dockerfile / terraform/**</div>
+      </div>
+      <div class="callout"><b>Supply-chain rule:</b> agents should not casually add packages. New dependencies need justification, maintenance checks, security review, and license consideration.</div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-head">
+      <div>
+        <div class="section-kicker">11 • TEST STRATEGY</div>
+        <h2>Do not let implementation and verification share the same assumption</h2>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <span class="pill red">Risky</span>
+        <pre>Agent writes implementation
+        ↓
+Agent writes tests proving
+its own implementation
+        ↓
+Everything passes</pre>
+        <p style="margin-top:12px">A wrong assumption can exist in both the implementation and the tests.</p>
+      </div>
+      <div class="card">
+        <span class="pill green">Preferred</span>
+        <pre>Acceptance Criteria
+       │
+       ├── Unit tests
+       ├── Integration tests
+       └── E2E tests
+             ↓
+Implementation must satisfy them</pre>
+        <p style="margin-top:12px">Tests should be derived from behavior and requirements, not just from the code that already exists.</p>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:16px">
+      <h3>For high-risk work, separate roles</h3>
+      <div class="flow" style="grid-template-columns:repeat(9,1fr);margin-top:14px">
+        <div class="step"><div class="node blue">P</div><b>Planning Agent</b></div><div class="arrow">→</div>
+        <div class="step"><div class="node green">T</div><b>Test Agent</b></div><div class="arrow">→</div>
+        <div class="step"><div class="node purple">I</div><b>Implementation Agent</b></div><div class="arrow">→</div>
+        <div class="step"><div class="node amber">R</div><b>Review Agent</b></div><div class="arrow">→</div>
+        <div class="step"><div class="node green">H</div><b>Human</b></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-head">
+      <div>
+        <div class="section-kicker">12 • CONCURRENCY</div>
+        <h2>Merge queues matter more when many agents work in parallel</h2>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="grid-3">
+        <div>
+          <span class="pill green">PR A ✓</span>
+          <span class="pill green">PR B ✓</span>
+          <span class="pill green">PR C ✓</span>
+          <p style="margin-top:12px">Each PR may pass independently.</p>
+        </div>
+        <div style="display:grid;place-items:center;font-size:32px;color:#94a3b8">→</div>
+        <div>
+          <span class="pill blue">Merge Queue</span>
+          <p style="margin-top:12px">Validate against the latest target state before merge, reducing integration failures caused by concurrent changes.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="metrics" class="section">
+    <div class="section-head">
+      <div>
+        <div class="section-kicker">13 • MEASUREMENT</div>
+        <h2>Measure successful change, not generated code</h2>
+      </div>
+    </div>
+
+    <div class="grid-4">
+      <div class="metric"><b>Lead Time</b><span>How quickly work moves from approved intent to production.</span></div>
+      <div class="metric"><b>PR Cycle Time</b><span>How long changes wait for verification and review.</span></div>
+      <div class="metric"><b>Deployment Frequency</b><span>How often safe changes reach users.</span></div>
+      <div class="metric"><b>Change Failure Rate</b><span>How often releases cause incidents or rollback.</span></div>
+      <div class="metric"><b>Escaped Defects</b><span>Problems that reach production.</span></div>
+      <div class="metric"><b>Rework Rate</b><span>How often agent-produced code needs significant correction.</span></div>
+      <div class="metric"><b>CI Failure Rate</b><span>Quality of changes before merge.</span></div>
+      <div class="metric"><b>Median PR Size</b><span>Whether review remains practical as throughput grows.</span></div>
+    </div>
+
+    <div class="callout"><b>Avoid vanity metrics:</b> lines of code, commits per developer, or number of AI-generated PRs can increase while system quality decreases.</div>
+  </section>
+
+  <section id="rollout" class="section">
+    <div class="section-head">
+      <div>
+        <div class="section-kicker">14 • PROPOSED ROLLOUT</div>
+        <h2>A safe path to organizational adoption</h2>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <div class="phase">
+          <div class="phase-item"><b>Phase 1 — Standardize repositories</b><br><small>Rulesets, branch protection, CODEOWNERS, PR template, CI baseline, AGENTS.md.</small></div>
+          <div class="phase-item"><b>Phase 2 — Enable guided agent work</b><br><small>Agents can edit, commit, create branches and PRs. Human merge approval remains mandatory.</small></div>
+          <div class="phase-item"><b>Phase 3 — Add reusable instructions and skills</b><br><small>Path-specific coding, testing, database and security guidance.</small></div>
+          <div class="phase-item"><b>Phase 4 — Expand automated verification</b><br><small>Architecture tests, dependency checks, security scans, stronger integration coverage.</small></div>
+          <div class="phase-item"><b>Phase 5 — Increase autonomy by risk class</b><br><small>Allow low-risk categories to progress further automatically while preserving strict controls for sensitive areas.</small></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Minimum organizational standard</h3>
+        <div class="checks">
+          <div class="check"><span class="dot">✓</span><span>No direct pushes to protected branches</span></div>
+          <div class="check"><span class="dot">✓</span><span>Required CI before merge</span></div>
+          <div class="check"><span class="dot">✓</span><span>Human approval for production code</span></div>
+          <div class="check"><span class="dot">✓</span><span>CODEOWNERS for high-risk areas</span></div>
+          <div class="check"><span class="dot">✓</span><span>Small PR expectations</span></div>
+          <div class="check"><span class="dot">✓</span><span>Repository-wide agent instructions</span></div>
+          <div class="check"><span class="dot">✓</span><span>Security and dependency scanning</span></div>
+          <div class="check"><span class="dot">✓</span><span>Traceability from issue to deployment</span></div>
+          <div class="check"><span class="dot">✓</span><span>Outcome-based engineering metrics</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-head">
+      <div>
+        <div class="section-kicker">15 • DECISION</div>
+        <h2>Recommended policy statement</h2>
+      </div>
+    </div>
+
+    <div class="card" style="background:linear-gradient(135deg,#eff6ff,#fff 65%)">
+      <p style="font-size:19px;color:#0f172a"><b>AI agents should be treated as high-throughput engineering participants operating inside enforced repository, CI, security, and review boundaries.</b></p>
+      <p style="margin-top:12px">We should optimize for safe speed: clear intent, small changes, automated verification, least privilege, risk-based human review, clean Git history, and measurable outcomes. The objective is not to remove humans from the SDLC. It is to move human attention to the decisions where judgment and accountability matter most.</p>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div><b>Agentic SDLC with GitHub</b><br><span>Proposed organizational RFC / RFD</span></div>
+    <div style="text-align:right"><b>Key message:</b><br><span>Empower agents. Protect the system. Elevate human judgment.</span></div>
+  </footer>
+</main>
+</body>
+</html>
