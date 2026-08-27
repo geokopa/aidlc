@@ -2,7 +2,7 @@
 
 > A modern, safe, and scalable approach to software delivery with AI coding agents.
 
-![Agentic SDLC with GitHub](agentic-sdlc.png)
+![Agentic SDLC with GitHub](agentic-sdlc.jpeg)
 
 ## Overview
 
