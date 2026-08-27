@@ -215,6 +215,7 @@
         <a href="#trust">Trust ladder</a>
         <a href="#metrics">Metrics</a>
         <a href="#rollout">Rollout</a>
+        <a href="#goals">Goals & timeline</a>
       </div>
     </div>
 
@@ -809,10 +810,122 @@ Implementation must satisfy them</pre>
     </div>
   </section>
 
+
+  <section id="goals" class="section">
+    <div class="section-head">
+      <div>
+        <div class="section-kicker">15 • GOALS, DELIVERABLES & TIMELINE</div>
+        <h2>What happens next</h2>
+      </div>
+      <span class="pill blue">Practical 6-month rollout</span>
+    </div>
+
+    <div class="card" style="margin-bottom:16px;background:linear-gradient(135deg,#f8fbff,#fff 60%)">
+      <h3>Target outcome</h3>
+      <p>Within six months, establish a repeatable Agentic SDLC standard that teams can adopt without weakening engineering controls. The first goal is not full autonomy. The first goal is a safe, measurable workflow that improves delivery speed while keeping human accountability.</p>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <div class="phase">
+          <div class="phase-item">
+            <span class="pill blue">Weeks 1–2</span>
+            <h3 style="margin-top:9px">Foundation and baseline</h3>
+            <p>Define the minimum organizational standard and apply it to one pilot repository.</p>
+            <div class="checks">
+              <div class="check"><span class="dot">✓</span><span>GitHub ruleset for protected branches</span></div>
+              <div class="check"><span class="dot">✓</span><span>CODEOWNERS for high-risk areas</span></div>
+              <div class="check"><span class="dot">✓</span><span>PR template with scope, tests, risks, and verification</span></div>
+              <div class="check"><span class="dot">✓</span><span>Initial <code>AGENTS.md</code> and repository instructions</span></div>
+              <div class="check"><span class="dot">✓</span><span>Baseline CI: build, tests, analyzers, and security checks</span></div>
+              <div class="check"><span class="dot">✓</span><span>Capture current lead time, PR cycle time, CI failure rate, and PR size</span></div>
+            </div>
+            <div class="callout"><b>Exit criteria:</b> the pilot repository cannot bypass required quality gates, and the team agrees on the initial agent operating rules.</div>
+          </div>
+
+          <div class="phase-item">
+            <span class="pill purple">Weeks 3–6</span>
+            <h3 style="margin-top:9px">Pilot agent-assisted delivery</h3>
+            <p>Use agents on real, low-to-medium-risk work while keeping human approval mandatory.</p>
+            <div class="checks">
+              <div class="check"><span class="dot">✓</span><span>Agents may create branches, commits, PRs, and fix CI failures</span></div>
+              <div class="check"><span class="dot">✓</span><span>Use small PR expectations and issue-based acceptance criteria</span></div>
+              <div class="check"><span class="dot">✓</span><span>Introduce path-specific C#, SQL, test, and security instructions</span></div>
+              <div class="check"><span class="dot">✓</span><span>Add 2–3 reusable skills for common engineering workflows</span></div>
+              <div class="check"><span class="dot">✓</span><span>Review 10–20 agent-assisted PRs and capture failure patterns</span></div>
+            </div>
+            <div class="callout"><b>Exit criteria:</b> the pilot shows repeatable delivery with no reduction in code quality or security controls, and common agent mistakes are documented.</div>
+          </div>
+
+          <div class="phase-item">
+            <span class="pill amber">Weeks 7–12</span>
+            <h3 style="margin-top:9px">Strengthen verification and scale the standard</h3>
+            <p>Turn lessons from the pilot into reusable organizational controls.</p>
+            <div class="checks">
+              <div class="check"><span class="dot">✓</span><span>Add architecture tests and stronger integration checks where needed</span></div>
+              <div class="check"><span class="dot">✓</span><span>Enable dependency review, secret scanning, and CodeQL/SAST gates</span></div>
+              <div class="check"><span class="dot">✓</span><span>Define risk classes for low, medium, and high-risk changes</span></div>
+              <div class="check"><span class="dot">✓</span><span>Publish a reusable repository starter / template</span></div>
+              <div class="check"><span class="dot">✓</span><span>Onboard 2–3 additional repositories or teams</span></div>
+              <div class="check"><span class="dot">✓</span><span>Introduce merge queue where concurrency justifies it</span></div>
+            </div>
+            <div class="callout"><b>Exit criteria:</b> another team can adopt the standard using documented templates instead of rebuilding the process from scratch.</div>
+          </div>
+
+          <div class="phase-item">
+            <span class="pill green">Months 4–6</span>
+            <h3 style="margin-top:9px">Controlled scale and higher autonomy</h3>
+            <p>Expand only where metrics show the workflow is stable and safe.</p>
+            <div class="checks">
+              <div class="check"><span class="dot">✓</span><span>Move proven low-risk workflows toward Trust Level 4–5</span></div>
+              <div class="check"><span class="dot">✓</span><span>Keep sensitive areas under explicit human approval</span></div>
+              <div class="check"><span class="dot">✓</span><span>Create an engineering dashboard for delivery and quality metrics</span></div>
+              <div class="check"><span class="dot">✓</span><span>Review rules, instructions, skills, and failure patterns quarterly</span></div>
+              <div class="check"><span class="dot">✓</span><span>Decide whether any narrowly defined workflow is ready for Level 6 autonomy</span></div>
+            </div>
+            <div class="callout"><b>Exit criteria:</b> there is measurable evidence that agent-assisted delivery is faster without increasing defects, rework, or security risk.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Concrete deliverables</h3>
+        <table class="rfc-table" style="margin-top:12px">
+          <thead>
+            <tr><th>Deliverable</th><th>Owner</th><th>Target</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Agentic SDLC policy and repository minimums</td><td>Engineering / Architecture</td><td>End of Week 2</td></tr>
+            <tr><td>Pilot repository fully configured</td><td>Pilot Team + Platform</td><td>End of Week 2</td></tr>
+            <tr><td>Initial AGENTS.md + path instructions</td><td>Pilot Team</td><td>End of Week 3</td></tr>
+            <tr><td>PR template + issue acceptance criteria template</td><td>Engineering Enablement</td><td>End of Week 3</td></tr>
+            <tr><td>2–3 reusable agent skills</td><td>AI Champions / Developers</td><td>End of Week 6</td></tr>
+            <tr><td>Pilot results and lessons learned</td><td>Pilot Team</td><td>End of Week 6</td></tr>
+            <tr><td>Reusable repository starter / template</td><td>Platform / DevEx</td><td>End of Week 10</td></tr>
+            <tr><td>Risk classification and trust-level policy</td><td>Architecture + Security</td><td>End of Week 12</td></tr>
+            <tr><td>2–3 additional teams onboarded</td><td>Engineering Leads</td><td>End of Month 4</td></tr>
+            <tr><td>Metrics dashboard and six-month review</td><td>Engineering Leadership</td><td>End of Month 6</td></tr>
+          </tbody>
+        </table>
+
+        <h3 style="margin-top:20px">How we know it is working</h3>
+        <div class="checks">
+          <div class="check"><span class="dot">1</span><span><b>Delivery:</b> lead time and PR cycle time improve.</span></div>
+          <div class="check"><span class="dot">2</span><span><b>Quality:</b> escaped defects and rollback rate do not increase.</span></div>
+          <div class="check"><span class="dot">3</span><span><b>Review:</b> median PR size stays small and review remains practical.</span></div>
+          <div class="check"><span class="dot">4</span><span><b>Agent effectiveness:</b> rework and repeated AI mistakes trend down.</span></div>
+          <div class="check"><span class="dot">5</span><span><b>Adoption:</b> new teams can adopt the standard with minimal custom setup.</span></div>
+        </div>
+
+        <div class="callout" style="margin-top:18px"><b>Management decision at Month 6:</b> continue scaling, adjust controls, or limit autonomy based on measured delivery, quality, security, and rework data.</div>
+      </div>
+    </div>
+  </section>
+
   <section class="section">
     <div class="section-head">
       <div>
-        <div class="section-kicker">15 • DECISION</div>
+        <div class="section-kicker">16 • DECISION</div>
         <h2>Recommended policy statement</h2>
       </div>
     </div>
