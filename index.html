@@ -164,8 +164,47 @@
   .phase-item{position:relative;padding:0 0 18px 14px}
   .phase-item:before{content:"";position:absolute;left:-5px;top:5px;width:10px;height:10px;border-radius:50%;background:#2563eb;border:2px solid #dbeafe}
   .phase-item:last-child{padding-bottom:0}
+  .working-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .working-card{display:flex;flex-direction:column;gap:14px}
+  .working-card .checks{margin-top:0}
+  .working-card > p{margin:0}
+  .definition{font-size:16px;color:#334155}
+  details.guide{
+    border:1px solid var(--border);border-radius:12px;background:#fbfdff;overflow:hidden
+  }
+  details.guide summary{
+    cursor:pointer;list-style:none;padding:13px 15px;font-size:13px;font-weight:750;color:#334155;
+    display:flex;align-items:center;justify-content:space-between;gap:12px
+  }
+  details.guide summary::-webkit-details-marker{display:none}
+  details.guide summary:after{content:"+";font-size:18px;line-height:1;color:var(--primary)}
+  details.guide[open] summary{border-bottom:1px solid var(--border);background:#f8fafc}
+  details.guide[open] summary:after{content:"−"}
+  .guide-body{padding:15px}
+  .template-head{display:flex;align-items:center;justify-content:space-between;gap:12px}
+  .template-head b{font-size:13px}
+  .copy-button{
+    border:1px solid #bfdbfe;background:#fff;color:#1d4ed8;border-radius:9px;padding:7px 10px;
+    font:inherit;font-size:12px;font-weight:750;cursor:pointer
+  }
+  .copy-button:hover{background:#eff6ff}
+  .copy-button:focus-visible,details.guide summary:focus-visible,.toc a:focus-visible{outline:3px solid var(--ring);outline-offset:2px}
+  .template{position:relative}
+  .template pre{margin-top:10px;white-space:pre-wrap}
+  .numbered-steps{counter-reset:recovery;display:grid;gap:10px;margin-top:12px}
+  .numbered-step{counter-increment:recovery;display:flex;gap:10px;color:#334155;font-size:14px}
+  .numbered-step:before{
+    content:counter(recovery);width:24px;height:24px;display:grid;place-items:center;flex:none;
+    border-radius:8px;background:#eff6ff;color:#1d4ed8;font-size:12px;font-weight:800
+  }
+  .example-block{border-top:1px solid var(--border);padding-top:14px;margin-top:14px}
+  .example-block:first-child{border-top:0;padding-top:0;margin-top:0}
+  .example-block h4{font-size:15px;margin:0 0 8px}
+  .example-block p{margin:0;color:#475569}
+  .sample-label{display:inline-flex;margin-top:10px;font-size:11px;font-weight:800;color:#7c3aed;text-transform:uppercase;letter-spacing:.05em}
+  .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
   @media (max-width:980px){
-    .hero,.grid-2,.grid-3,.grid-4{grid-template-columns:1fr}
+    .hero,.grid-2,.grid-3,.grid-4,.working-grid{grid-template-columns:1fr}
     .flow{grid-template-columns:repeat(17,max-content)}
     .arrow{min-width:24px}
     .risk-grid{grid-template-columns:1fr}
@@ -212,6 +251,7 @@
         <a href="#git">GitHub guardrails</a>
         <a href="#context">Agent context</a>
         <a href="#review">Human review</a>
+        <a href="#working-with-agents">Working with agents</a>
         <a href="#trust">Trust ladder</a>
         <a href="#metrics">Metrics</a>
         <a href="#rollout">Rollout</a>
@@ -545,6 +585,224 @@ Issue → short branch → small PR → merge → delete</pre>
     </div>
 
     <div class="callout"><b>Operating model:</b> AI review is an additional reviewer. CI is objective verification. Human review carries accountability.</div>
+  </section>
+
+  <section id="working-with-agents" class="section">
+    <div class="section-head">
+      <div>
+        <div class="section-kicker">PRACTICAL TEAM PLAYBOOK</div>
+        <h2>Working with agents</h2>
+      </div>
+      <span class="pill blue">Use during issue writing and review</span>
+    </div>
+
+    <div class="working-grid">
+      <article class="card working-card">
+        <div>
+          <span class="pill green">Before work starts</span>
+          <h3 style="margin-top:12px">1. Ready for an agent</h3>
+          <p class="definition">A task is ready when both a developer and an agent can understand the expected result, the boundaries, and how success will be checked.</p>
+        </div>
+        <div class="checks" aria-label="Ready for an agent checklist">
+          <div class="check"><span class="dot">✓</span><span>The goal and expected behavior are clear.</span></div>
+          <div class="check"><span class="dot">✓</span><span>Acceptance criteria describe observable results.</span></div>
+          <div class="check"><span class="dot">✓</span><span>Included and excluded work are stated.</span></div>
+          <div class="check"><span class="dot">✓</span><span>Relevant context is linked, including known code areas and existing patterns.</span></div>
+          <div class="check"><span class="dot">✓</span><span>Constraints and sensitive areas are identified.</span></div>
+          <div class="check"><span class="dot">✓</span><span>Verification steps are defined.</span></div>
+          <div class="check"><span class="dot">✓</span><span>A human owner is named.</span></div>
+          <div class="check"><span class="dot">✓</span><span>Required access is approved and available.</span></div>
+        </div>
+        <div class="callout"><b>Readiness is about clarity, not prescribing the solution.</b> Investigation is a valid agent task when it has a clear question and expected output.</div>
+        <p>If essential information is missing, the agent should identify the gap and ask one focused question instead of guessing.</p>
+        <details class="guide">
+          <summary>Copyable issue template</summary>
+          <div class="guide-body template">
+            <div class="template-head"><b>Issue template</b><button class="copy-button" type="button" data-copy="issue-template">Copy template</button></div>
+            <pre id="issue-template">Goal:
+Expected behavior:
+Acceptance criteria:
+In scope:
+Out of scope:
+Relevant context:
+Constraints and sensitive areas:
+Verification:
+Human owner:</pre>
+          </div>
+        </details>
+      </article>
+
+      <article class="card working-card">
+        <div>
+          <span class="pill blue">Before review starts</span>
+          <h3 style="margin-top:12px">2. Ready for review</h3>
+          <p class="definition">Finishing code generation does not make a change ready for review. The owner must understand the change, and the evidence must be available.</p>
+        </div>
+        <div class="checks" aria-label="Ready for review checklist">
+          <div class="check"><span class="dot">✓</span><span>The change addresses the agreed task and acceptance criteria.</span></div>
+          <div class="check"><span class="dot">✓</span><span>The change is focused, with unrelated edits removed.</span></div>
+          <div class="check"><span class="dot">✓</span><span>The human owner understands the change and can explain it.</span></div>
+          <div class="check"><span class="dot">✓</span><span>Relevant checks have run, and actual results are recorded.</span></div>
+          <div class="check"><span class="dot">✓</span><span>Tests cover expected behavior and important failure cases.</span></div>
+          <div class="check"><span class="dot">✓</span><span>Tests were not removed or weakened merely to make checks pass.</span></div>
+          <div class="check"><span class="dot">✓</span><span>New dependencies, sensitive changes, and operational effects are identified.</span></div>
+          <div class="check"><span class="dot">✓</span><span>Known limitations, unverified behavior, and open questions are disclosed.</span></div>
+          <div class="check"><span class="dot">✓</span><span>The pull request explains what changed, why, and how it was verified.</span></div>
+          <div class="check"><span class="dot">✓</span><span>The appropriate reviewers are requested.</span></div>
+        </div>
+        <div class="callout"><b>Ready for human review is not approved to merge.</b> A reviewer still decides whether the change is acceptable. Disclose missing or failed checks; use a draft pull request when help is needed.</div>
+        <details class="guide">
+          <summary>Copyable pull request template</summary>
+          <div class="guide-body template">
+            <div class="template-head"><b>Pull request template</b><button class="copy-button" type="button" data-copy="pr-template">Copy template</button></div>
+            <pre id="pr-template">What changed:
+Why:
+Acceptance criteria covered:
+Verification performed and results:
+Risks and operational impact:
+Known limitations or checks not run:
+Required reviewers:</pre>
+          </div>
+        </details>
+      </article>
+    </div>
+
+    <article class="card working-card" style="margin-top:16px">
+      <div>
+        <span class="pill amber">Recovery</span>
+        <h3 style="margin-top:12px">3. What to do when the agent gets stuck</h3>
+        <p class="definition">Treat these as signs to stop and reassess: the agent repeats the same unsuccessful approach, makes increasingly broad or unrelated changes, gives conflicting explanations, tries to weaken tests or checks, or needs missing requirements, unavailable access, or a decision outside its authority.</p>
+      </div>
+      <div class="grid-2">
+        <div>
+          <h4>Recovery sequence</h4>
+          <div class="numbered-steps">
+            <div class="numbered-step">Stop the current attempt and inspect the changes and errors.</div>
+            <div class="numbered-step">Preserve useful work and identify the last known working state.</div>
+            <div class="numbered-step">Decide whether the problem is missing context, unclear requirements, environment or access, or implementation.</div>
+            <div class="numbered-step">Narrow the task or provide the specific missing information.</div>
+            <div class="numbered-step">Continue only with a concrete new approach.</div>
+            <div class="numbered-step">Hand off to a teammate or finish manually when that is more effective.</div>
+          </div>
+        </div>
+        <div>
+          <div class="callout" style="margin-top:0"><b>Use judgment, not endless retries.</b> There is no universal retry limit. Do not bypass controls or discard unrelated work while recovering.</div>
+          <details class="guide" style="margin-top:14px">
+            <summary>Copyable handoff template</summary>
+            <div class="guide-body template">
+              <div class="template-head"><b>Handoff template</b><button class="copy-button" type="button" data-copy="handoff-template">Copy template</button></div>
+              <pre id="handoff-template">Goal:
+Current state:
+What was attempted:
+Observed errors:
+Useful changes to preserve:
+Checks run and results:
+Decision or help needed:</pre>
+            </div>
+          </details>
+        </div>
+      </div>
+    </article>
+
+    <article class="card" style="margin-top:16px">
+      <span class="pill purple">Illustrative example</span>
+      <h3 style="margin-top:12px">4. Reject an empty customer name: issue to review</h3>
+      <p>This example shows a complete path. It does not describe this repository, and the verification results below are clearly marked samples.</p>
+      <details class="guide" style="margin-top:14px">
+        <summary>Open the complete worked example</summary>
+        <div class="guide-body">
+          <div class="example-block">
+            <h4>Completed issue</h4>
+            <p><b>Goal:</b> Prevent customers without a usable name from being saved.</p>
+            <p><b>Expected behavior:</b> Missing, empty, or whitespace-only names are rejected. The user receives a clear validation message. Invalid input is not saved. Existing behavior for valid names remains unchanged.</p>
+            <p><b>Acceptance criteria:</b></p>
+            <ul>
+              <li>A missing, empty, or whitespace-only customer name is rejected with a clear validation message.</li>
+              <li>No customer record is saved for invalid input.</li>
+              <li>A valid customer name continues to be accepted and saved as before.</li>
+            </ul>
+            <p style="margin-top:10px"><b>In scope:</b> Follow the application’s existing validation and error-handling patterns; update the smallest relevant validation path; add focused tests.</p>
+            <p><b>Out of scope:</b> Database schema changes, new dependencies, and unrelated refactoring.</p>
+            <p><b>Relevant context:</b> Existing customer input validation, user-facing validation messages, and persistence tests.</p>
+            <p><b>Constraints and sensitive areas:</b> Preserve current valid-name behavior. Do not weaken existing checks.</p>
+            <p><b>Verification:</b> Test missing, empty, whitespace-only, and valid names. At the appropriate test level, confirm invalid input is not persisted. Run the project’s relevant existing checks.</p>
+            <p><b>Human owner:</b> [Name / team]</p>
+          </div>
+
+          <div class="example-block">
+            <h4>Short agent plan</h4>
+            <ol>
+              <li>Inspect the existing customer validation, error-handling, and test patterns.</li>
+              <li>Confirm where validation must run before persistence.</li>
+              <li>Implement the smallest focused change using the existing pattern.</li>
+              <li>Add tests for each acceptance case and for non-persistence of invalid input.</li>
+              <li>Run relevant checks, review the diff, and record actual results.</li>
+            </ol>
+          </div>
+
+          <div class="example-block">
+            <h4>Expected implementation scope</h4>
+            <p>Update the existing customer-name validation path and its user-facing message, then extend the nearest relevant unit or integration tests. Use an integration-level check for non-persistence if that is where the application proves writes. Do not invent a new validation layer or broaden the change.</p>
+          </div>
+
+          <div class="example-block">
+            <h4>Tests to add or update</h4>
+            <div class="checks">
+              <div class="check"><span class="dot">1</span><span>Missing name is rejected with the expected message.</span></div>
+              <div class="check"><span class="dot">2</span><span>Empty name is rejected with the expected message.</span></div>
+              <div class="check"><span class="dot">3</span><span>Whitespace-only name is rejected with the expected message.</span></div>
+              <div class="check"><span class="dot">4</span><span>Valid name retains existing behavior.</span></div>
+              <div class="check"><span class="dot">5</span><span>Invalid input is not persisted, at the appropriate test level.</span></div>
+            </div>
+          </div>
+
+          <div class="example-block">
+            <h4>Human review questions</h4>
+            <ul>
+              <li>Does the change reject all three invalid forms before persistence?</li>
+              <li>Is the validation message clear and consistent with the application?</li>
+              <li>Does the test evidence prove valid-name behavior is unchanged?</li>
+              <li>Is the diff focused, with no schema, dependency, or unrelated refactoring changes?</li>
+              <li>Are any checks missing or any assumptions still unverified?</li>
+            </ul>
+          </div>
+
+          <div class="example-block template">
+            <div class="template-head"><h4 style="margin:0">Sample pull request summary</h4><button class="copy-button" type="button" data-copy="example-pr">Copy sample</button></div>
+            <span class="sample-label">Sample only — replace with actual evidence</span>
+            <pre id="example-pr">What changed:
+Added customer-name validation using the application's existing validation and error-handling pattern. Missing, empty, and whitespace-only names are rejected before persistence.
+
+Why:
+Customer records require a usable name, and invalid submissions need a clear response without being saved.
+
+Acceptance criteria covered:
+- Missing, empty, and whitespace-only names are rejected.
+- A clear validation message is returned.
+- Invalid input is not persisted.
+- Existing behavior for valid names is unchanged.
+
+Verification performed and results:
+[SAMPLE — replace before review]
+- Customer validation tests: passed (4 cases)
+- Non-persistence integration check: passed (3 invalid cases)
+- Relevant project checks: passed
+
+Risks and operational impact:
+Low, focused validation change. No schema changes or new dependencies.
+
+Known limitations or checks not run:
+[Record actual limitations or "None known".]
+
+Required reviewers:
+[Human owner and any required code owner]</pre>
+          </div>
+
+          <div class="callout"><b>If existing validation behavior is unclear:</b> pause, ask the human owner what behavior to preserve, and update the acceptance criteria before continuing.</div>
+        </div>
+      </details>
+    </article>
+    <div id="copy-status" class="sr-only" role="status" aria-live="polite"></div>
   </section>
 
   <section class="section">
@@ -941,5 +1199,28 @@ Implementation must satisfy them</pre>
     <div style="text-align:right"><b>Key message:</b><br><span>Empower agents. Protect the system. Elevate human judgment.</span></div>
   </footer>
 </main>
+<script>
+  document.querySelectorAll('[data-copy]').forEach((button) => {
+    button.addEventListener('click', async () => {
+      const source = document.getElementById(button.dataset.copy);
+      const status = document.getElementById('copy-status');
+      if (!source || !status) return;
+
+      try {
+        await navigator.clipboard.writeText(source.textContent.trim());
+        button.textContent = 'Copied';
+        button.setAttribute('aria-label', 'Template copied to clipboard');
+        status.textContent = 'Template copied to clipboard.';
+        window.setTimeout(() => {
+          button.textContent = button.dataset.copy === 'example-pr' ? 'Copy sample' : 'Copy template';
+          button.removeAttribute('aria-label');
+        }, 1800);
+      } catch (error) {
+        status.textContent = 'Copy failed. Select the template text and copy it manually.';
+        button.textContent = 'Copy failed';
+      }
+    });
+  });
+</script>
 </body>
 </html>
